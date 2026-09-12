@@ -1,0 +1,435 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Admin Control Center — Pay-Together
+{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-slate-50 dark:bg-[#0b0f19] relative transition-colors duration-200">
+
+    <!-- Dedicated Admin Sidebar (fixed on left) -->
+    <aside class="w-64 bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col fixed inset-y-0 left-0 h-screen shrink-0 overflow-y-auto z-30 transition-colors duration-200">
+        <div class="px-5 py-5 border-b border-slate-100 dark:border-slate-800 relative z-10">
+            <a href="/client/admin/" class="flex items-center gap-3 group">
+                <img src="{% static 'img/logo-icon.png' %}" alt="Pay-Together Logo" class="w-10 h-10 rounded-xl object-cover shadow-sm sidebar-logo shrink-0 group-hover:scale-105 transition-transform">
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                        <h1 class="text-xl font-black text-slate-900 dark:text-white tracking-tight whitespace-nowrap">Pay-Together</h1>
+                    </div>
+                    <p class="text-amber-600 dark:text-amber-400 text-xs font-bold whitespace-nowrap truncate flex items-center gap-1">
+                        <i class="fa-solid fa-shield-halved text-[10px]"></i> Admin Portal (8001)
+                    </p>
+                </div>
+            </a>
+        </div>
+
+        <nav class="flex-1 mt-5 relative z-10 px-3 space-y-1.5">
+            <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Control Center</p>
+
+            <!-- Tab: Users Management -->
+            <button type="button" id="sidebarBtnUsers" onclick="switchAdminTab('users')"
+                    class="w-full flex items-center px-4 py-3 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-bold rounded-xl border-l-4 border-amber-500 transition cursor-pointer text-left">
+                <i class="fa-solid fa-users-gear mr-3 w-5 text-amber-600 dark:text-amber-400"></i>
+                <span class="text-sm">User Accounts</span>
+                <span id="sidebarCountUsers" class="ml-auto text-xs bg-amber-200/80 dark:bg-amber-900/80 text-amber-900 dark:text-amber-200 font-bold px-2 py-0.5 rounded-full">-</span>
+            </button>
+
+            <!-- Tab: Tours Overview -->
+            <button type="button" id="sidebarBtnTours" onclick="switchAdminTab('tours')"
+                    class="w-full flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition cursor-pointer text-left">
+                <i class="fa-solid fa-map-location-dot mr-3 w-5"></i>
+                <span class="text-sm">Tours & Groups</span>
+                <span id="sidebarCountTours" class="ml-auto text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold px-2 py-0.5 rounded-full">-</span>
+            </button>
+
+            <!-- Tab: Security & Master Pass -->
+            <button type="button" id="sidebarBtnSecurity" onclick="switchAdminTab('security')"
+                    class="w-full flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition cursor-pointer text-left">
+                <i class="fa-solid fa-shield-halved mr-3 w-5 text-amber-500"></i>
+                <span class="text-sm">Security & Pass</span>
+            </button>
+
+            <!-- Low-Level Django Admin -->
+            <a href="/admin/access-pass/" target="_blank"
+               class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-terminal mr-3 w-5 text-emerald-500"></i>
+                <span class="text-sm">Django Backend</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-auto text-slate-400"></i>
+            </a>
+
+            <!-- Platform Analytics -->
+            <a href="/client/analytics/" target="_blank"
+               class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-chart-pie mr-3 w-5 text-sky-500"></i>
+                <span class="text-sm">Analytics Suite</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-auto text-slate-400"></i>
+            </a>
+
+            <div class="pt-4 pb-1">
+                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Live Application</p>
+                <!-- Switch to Client Website Port 8000 -->
+                <a href="http://127.0.0.1:8000/client/dashboard/" target="_blank"
+                   class="flex items-center px-4 py-3 bg-indigo-50/80 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 font-bold rounded-xl transition border border-indigo-200/70 dark:border-indigo-800/70 shadow-xs">
+                    <i class="fa-solid fa-globe mr-3 w-5 text-indigo-600 dark:text-indigo-400"></i>
+                    <span class="text-sm">Main Website</span>
+                    <span class="ml-auto text-[10px] font-black uppercase bg-indigo-600 text-white px-2 py-0.5 rounded-md">8000</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <a href="/client/logout/" class="flex items-center px-4 py-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium rounded-xl transition mt-4">
+                <i class="fa-solid fa-right-from-bracket mr-3 w-5"></i>
+                <span class="text-sm">Admin Sign Out</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100 dark:border-slate-800 relative z-10 flex items-center justify-between gap-2">
+            <div class="p-2.5 px-3 rounded-xl bg-amber-50/50 dark:bg-slate-800/60 border border-amber-200/50 dark:border-slate-700 flex-1">
+                <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Environment</p>
+                <p class="text-xs font-black text-amber-600 dark:text-amber-400 mt-0.5"><i class="fa-solid fa-crown mr-1 text-amber-500"></i> Port 8001 Admin</p>
+            </div>
+            <button type="button" class="theme-toggle w-11 h-11 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer text-lg shrink-0 shadow-sm" title="Toggle Light/Dark Theme">
+                <span class="dark:hidden"><i class="fa-solid fa-moon"></i></span>
+                <span class="hidden dark:inline"><i class="fa-solid fa-sun text-amber-400"></i></span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Mobile Top Navigation Header (< md) -->
+    <div class="md:hidden fixed top-0 inset-x-0 z-30 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
+        <a href="/client/admin/" class="flex items-center gap-2.5">
+            <img src="{% static 'img/logo-icon.png' %}" alt="Logo" class="w-8 h-8 rounded-xl object-cover">
+            <div>
+                <span class="font-black text-lg text-slate-900 dark:text-white">Pay-Together</span>
+                <span class="text-[10px] font-black uppercase text-amber-600 ml-1">Admin 8001</span>
+            </div>
+        </a>
+        <div class="flex items-center gap-2">
+            <button type="button" class="theme-toggle w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-base">
+                <span class="dark:hidden"><i class="fa-solid fa-moon"></i></span>
+                <span class="hidden dark:inline"><i class="fa-solid fa-sun text-amber-400"></i></span>
+            </button>
+            <button type="button" onclick="toggleMobileNav(true)" class="w-9 h-9 flex items-center justify-center rounded-xl bg-amber-50 dark:bg-slate-800 text-amber-600 dark:text-amber-400 text-lg">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Slide-out Drawer -->
+    <div id="mobileNavDrawer" class="hidden fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="toggleMobileNav(false)"></div>
+        <div class="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-[#0f172a] shadow-2xl p-6 flex flex-col justify-between z-10">
+            <div>
+                <div class="flex items-center justify-between pb-5 border-b border-slate-100 dark:border-slate-800">
+                    <a href="/client/admin/" class="flex items-center gap-3">
+                        <img src="{% static 'img/logo-icon.png' %}" alt="Logo" class="w-10 h-10 rounded-2xl object-cover">
+                        <div>
+                            <h2 class="font-black text-xl text-slate-900 dark:text-white">Pay-Together</h2>
+                            <p class="text-xs font-bold text-amber-600">Admin Portal (Port 8001)</p>
+                        </div>
+                    </a>
+                    <button type="button" onclick="toggleMobileNav(false)" class="w-9 h-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 text-xl flex items-center justify-center">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <nav class="mt-6 space-y-2">
+                    <button type="button" onclick="switchAdminTab('users'); toggleMobileNav(false);" class="w-full flex items-center px-4 py-3 bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 rounded-xl font-bold text-sm text-left">
+                        <i class="fa-solid fa-users-gear mr-3 w-5 text-amber-600"></i> Users Management
+                    </button>
+                    <button type="button" onclick="switchAdminTab('tours'); toggleMobileNav(false);" class="w-full flex items-center px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl font-semibold text-sm text-left">
+                        <i class="fa-solid fa-map-location-dot mr-3 w-5 text-indigo-500"></i> Tours Overview
+                    </button>
+                    <button type="button" onclick="switchAdminTab('security'); toggleMobileNav(false);" class="w-full flex items-center px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl font-semibold text-sm text-left">
+                        <i class="fa-solid fa-shield-halved mr-3 w-5 text-amber-500"></i> Security & Master Pass
+                    </button>
+                    <a href="/admin/access-pass/" target="_blank" class="flex items-center px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl font-semibold text-sm">
+                        <i class="fa-solid fa-terminal mr-3 w-5 text-emerald-500"></i> Django Backend Admin ↗
+                    </a>
+                    <a href="http://127.0.0.1:8000/client/dashboard/" target="_blank" class="flex items-center px-4 py-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 rounded-xl font-bold text-sm">
+                        <i class="fa-solid fa-globe mr-3 w-5 text-indigo-600"></i> Switch to Website (Port 8000) ↗
+                    </a>
+                    <a href="/client/logout/" class="flex items-center px-4 py-3 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl font-semibold text-sm mt-4">
+                        <i class="fa-solid fa-right-from-bracket mr-3 w-5"></i> Logout
+                    </a>
+                </nav>
+            </div>
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400">
+                Logged in as <span class="font-bold text-slate-700 dark:text-slate-200">{{ request.user.email }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 min-w-0 md:ml-64 px-4 sm:px-6 pt-16 md:pt-6 pb-12 md:px-10 relative z-10">
+        <div class="max-w-7xl mx-auto">
+
+            <!-- Toast / Message Box -->
+            <div id="adminToastBox" class="mb-4"></div>
+
+            <!-- Page Header -->
+            <div class="flex flex-wrap items-center justify-between mb-8 gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                            <i class="fa-solid fa-shield-halved mr-1"></i> Admin Portal
+                        </span>
+                        <span class="text-xs text-slate-400">Neuroviax Architecture</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white mt-2">
+                        Platform Administration
+                    </h1>
+                    <p class="text-slate-500 dark:text-slate-400 mt-2 text-base sm:text-lg">
+                        Manage users, inspect group tours, analyze spending volume, and configure platform settings.
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-3 flex-wrap">
+                    <!-- Django Low-Level Admin Link -->
+                    <a href="/admin/access-pass/" target="_blank"
+                       class="bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white px-5 py-3 rounded-2xl transition font-bold text-sm shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-terminal text-emerald-400"></i> Django Admin Gate
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 ml-1"></i>
+                    </a>
+                    <a href="http://127.0.0.1:8000/client/dashboard/" target="_blank"
+                       class="bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 px-5 py-3 rounded-2xl transition font-bold text-sm shadow-xs flex items-center gap-2">
+                        <i class="fa-solid fa-globe"></i> Open Website (Port 8000)
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- KPI Metric Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                <!-- Card 1: Total Users -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xs border border-slate-200/90 dark:border-slate-700/80 p-6 transition-all flex flex-col justify-between">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-bold uppercase tracking-wider">Total Users</p>
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="kpiTotalUsers" class="text-3xl 2xl:text-4xl font-black text-slate-900 dark:text-white tracking-tight">{{ total_users }}</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1.5">
+                            <span id="kpiActiveUsers" class="text-emerald-600 dark:text-emerald-400 font-bold">Active</span> · Registered platform accounts
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Total Tours -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xs border border-slate-200/90 dark:border-slate-700/80 p-6 transition-all flex flex-col justify-between">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-bold uppercase tracking-wider">Total Tours</p>
+                        <div class="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-suitcase-rolling"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="kpiTotalTours" class="text-3xl 2xl:text-4xl font-black text-sky-600 dark:text-sky-400 tracking-tight">{{ total_tours }}</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1.5">
+                            <span id="kpiActiveTours" class="text-sky-600 dark:text-sky-400 font-bold">Group tours</span> · Active & settled
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Platform Spend Volume -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xs border border-slate-200/90 dark:border-slate-700/80 p-6 transition-all flex flex-col justify-between">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-bold uppercase tracking-wider">Spend Volume</p>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-money-bill-trend-up"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="kpiTotalSpend" class="text-2xl 2xl:text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight truncate">Rs. {{ total_spend|floatformat:2 }}</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Cumulative settled & recorded expenses</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Total Expenses Logged -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xs border border-slate-200/90 dark:border-slate-700/80 p-6 transition-all flex flex-col justify-between">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-bold uppercase tracking-wider">Logged Expenses</p>
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="kpiTotalExpenses" class="text-3xl 2xl:text-4xl font-black text-purple-600 dark:text-purple-400 tracking-tight">{{ total_expenses }}</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Individual itemized receipts & splits</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-3 overflow-x-auto">
+                <button type="button" onclick="switchAdminTab('users')" id="tabBtnUsers"
+                        class="px-5 py-2.5 rounded-2xl font-black text-sm transition cursor-pointer bg-indigo-600 text-white shadow-sm flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-users"></i> Users Management (<span id="tabCountUsers">-</span>)
+                </button>
+                <button type="button" onclick="switchAdminTab('tours')" id="tabBtnTours"
+                        class="px-5 py-2.5 rounded-2xl font-bold text-sm transition cursor-pointer bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-suitcase-rolling"></i> Tours Overview (<span id="tabCountTours">-</span>)
+                </button>
+                <button type="button" onclick="switchAdminTab('security')" id="tabBtnSecurity"
+                        class="px-5 py-2.5 rounded-2xl font-bold text-sm transition cursor-pointer bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-shield-halved text-amber-500"></i> Security & Credentials
+                </button>
+            </div>
+
+            <!-- TAB 1: USERS MANAGEMENT -->
+            <div id="tabContentUsers" class="space-y-6">
+                <!-- Search & Filters Bar -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="userSearchInput" oninput="debounceUserSearch()"
+                               placeholder="Search by name, email, or phone number..."
+                               class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:text-white">
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button type="button" onclick="filterUsers('all')" class="user-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-filter="all">All</button>
+                        <button type="button" onclick="filterUsers('active')" class="user-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200" data-filter="active">Active</button>
+                        <button type="button" onclick="filterUsers('staff')" class="user-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200" data-filter="staff">Staff / Admin</button>
+                        <button type="button" onclick="filterUsers('suspended')" class="user-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200" data-filter="suspended">Suspended</button>
+                    </div>
+                </div>
+
+                <!-- Users Data Table -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xs overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 uppercase font-black text-xs border-b border-slate-200 dark:border-slate-700">
+                                <tr>
+                                    <th class="px-6 py-4">User</th>
+                                    <th class="px-6 py-4">Contact</th>
+                                    <th class="px-6 py-4">Tours Joined</th>
+                                    <th class="px-6 py-4">Total Paid</th>
+                                    <th class="px-6 py-4">Role</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                <tr>
+                                    <td colspan="7" class="px-6 py-12 text-center text-slate-400">Loading registered users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: TOURS OVERVIEW -->
+            <div id="tabContentTours" class="space-y-6 hidden">
+                <!-- Search Tours Bar -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="tourSearchInput" oninput="debounceTourSearch()"
+                               placeholder="Search tours by title, destination, or creator..."
+                               class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:text-white">
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button type="button" onclick="filterTours('all')" class="tour-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-filter="all">All Tours</button>
+                        <button type="button" onclick="filterTours('active')" class="tour-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200" data-filter="active">Active</button>
+                        <button type="button" onclick="filterTours('settled')" class="tour-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200" data-filter="settled">Settled</button>
+                    </div>
+                </div>
+
+                <!-- Tours Data Table -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xs overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 uppercase font-black text-xs border-b border-slate-200 dark:border-slate-700">
+                                <tr>
+                                    <th class="px-6 py-4">Tour Title</th>
+                                    <th class="px-6 py-4">Destination</th>
+                                    <th class="px-6 py-4">Created By</th>
+                                    <th class="px-6 py-4">Members</th>
+                                    <th class="px-6 py-4">Budget</th>
+                                    <th class="px-6 py-4">Spent</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="toursTableBody" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                <tr>
+                                    <td colspan="8" class="px-6 py-12 text-center text-slate-400">Loading tours...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SECURITY & CREDENTIALS -->
+            <div id="tabContentSecurity" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Security Card -->
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Admin Access Passcode</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Low-level gate for Django backend administration</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Access to the internal Django admin endpoint (<code class="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded-md text-indigo-600 font-mono text-xs">/admin/</code>) is protected by a secondary 2-factor access pass gate.
+                        </p>
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Master Security Pass</p>
+                                <p class="text-lg font-mono font-black text-amber-600 dark:text-amber-400 tracking-wider mt-0.5">FYP-ADMIN-2026</p>
+                            </div>
+                            <button type="button" onclick="navigator.clipboard.writeText('FYP-ADMIN-2026'); showAdminToast('Passcode copied to clipboard!', 'success');"
+                                    class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition">
+                                <i class="fa-solid fa-copy mr-1"></i> Copy
+                            </button>
+                        </div>
+                        <a href="/admin/access-pass/" target="_blank"
+                           class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-900 dark:bg-slate-700 hover:bg-black text-white font-bold text-sm transition">
+                            <i class="fa-solid fa-lock text-amber-400"></i> Open Django Backend Admin Gate →
+                        </a>
+                    </div>
+
+                    <!-- Superuser Info Card -->
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Active Superuser Account</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Default primary administrator credentials</p>
+                            </div>
+                        </div>
+                        <div class="space-y-3 pt-2 text-sm">
+                            <div class="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                                <span class="text-slate-500">Superuser Email:</span>
+                                <span class="font-mono font-bold text-slate-800 dark:text-white">admin@paytogether.com</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                                <span class="text-slate-500">Password:</span>
+                                <span class="font-mono font-bold text-slate-800 dark:text-white">Admin@PayTogether2026!</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                                <span class="text-slate-500">Permissions:</span>
+                                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200">Staff + Superuser</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="{% static 'js/api.js' %}?v=20260905_v14"></script>
+<script src="{% static 'js/admin_dashboard.js' %}?v=20260909_v1"></script>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center bg-[#f8fafc] py-12 px-4 relative overflow-hidden">
+    <!-- Subtle Ambient Glow -->
+    <div class="pointer-events-none absolute inset-0 opacity-50">
+        <div class="absolute top-10 left-1/4 w-96 h-96 rounded-full bg-indigo-100 blur-3xl"></div>
+        <div class="absolute bottom-10 right-1/4 w-96 h-96 rounded-full bg-blue-100 blur-3xl"></div>
+    </div>
+
+    <!-- Top Right Theme Toggle -->
+    <div class="absolute top-6 right-6 z-20">
+        <button type="button"
+                class="theme-toggle w-11 h-11 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition btn-ripple cursor-pointer text-lg"
+                title="Toggle Light/Dark Theme"
+                aria-label="Toggle Light/Dark Theme">
+            <span class="dark:hidden"><i class="fa-solid fa-moon text-slate-700"></i></span>
+            <span class="hidden dark:inline"><i class="fa-solid fa-sun text-amber-400"></i></span>
+        </button>
+    </div>
+
+    <div class="w-full max-w-lg bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200/80 relative z-10">
+
+        <div class="text-center mb-6">
+            <img src="{% static 'img/logo-icon.png' %}" alt="Pay-Together Logo" class="w-20 h-20 mx-auto rounded-3xl object-cover mb-4 shadow-lg shadow-indigo-100 dark:shadow-none hover:scale-105 transition-transform">
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight">
+                Join Pay-Together
+            </h1>
+            <p class="text-slate-500 text-sm mt-1">Start splitting trips effortlessly with friends</p>
+        </div>
+
+        <!-- Success / Error Message -->
+        <div id="message" class="mb-4 text-center font-semibold text-sm"></div>
+
+        <form id="registerForm" class="space-y-4">
+
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- First Name -->
+                <div>
+                    <label for="first_name" class="block text-slate-700 font-bold text-sm mb-1.5">
+                        First Name
+                    </label>
+                    <input
+                        id="first_name"
+                        type="text"
+                        name="first_name"
+                        placeholder="John"
+                        class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 text-slate-800 placeholder:text-slate-400 text-sm transition"
+                    >
+                </div>
+
+                <!-- Last Name -->
+                <div>
+                    <label for="last_name" class="block text-slate-700 font-bold text-sm mb-1.5">
+                        Last Name
+                    </label>
+                    <input
+                        id="last_name"
+                        type="text"
+                        name="last_name"
+                        placeholder="Doe"
+                        class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 text-slate-800 placeholder:text-slate-400 text-sm transition"
+                    >
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-slate-700 font-bold text-sm mb-1.5">
+                    Email Address
+                </label>
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 text-slate-800 placeholder:text-slate-400 text-sm transition"
+                    required
+                >
+            </div>
+
+            <!-- Phone Number -->
+            <div>
+                <label for="phone_number" class="block text-slate-700 font-bold text-sm mb-1.5">
+                    Phone Number
+                </label>
+                <input
+                    id="phone_number"
+                    type="text"
+                    name="phone_number"
+                    placeholder="03XXXXXXXXX"
+                    class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 text-slate-800 placeholder:text-slate-400 text-sm transition"
+                >
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-slate-700 font-bold text-sm mb-1.5">
+                        Password
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="••••••••"
+                        class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 text-slate-800 placeholder:text-slate-400 text-sm transition"
+                        required
+                    >
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label for="confirm_password" class="block text-slate-700 font-bold text-sm mb-1.5">
+                        Confirm Password
+                    </label>
+                    <input
+                        id="confirm_password"
+                        type="password"
+                        name="confirm_password"
+                        placeholder="••••••••"
+                        class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 text-slate-800 placeholder:text-slate-400 text-sm transition"
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- Register Button -->
+            <button
+                type="submit"
+                class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 px-6 rounded-xl font-bold text-base transition shadow-md shadow-indigo-200 cursor-pointer flex items-center justify-center gap-2 btn-ripple"
+            >
+                Create Account
+            </button>
+
+        </form>
+
+        <div class="my-6 flex items-center gap-3">
+            <div class="flex-1 h-px bg-slate-200"></div>
+            <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">already registered?</span>
+            <div class="flex-1 h-px bg-slate-200"></div>
+        </div>
+
+        <p class="text-center text-slate-600 text-sm font-medium">
+            Already have an account?
+            <a href="/login/" class="text-indigo-600 hover:text-indigo-700 font-bold hover:underline transition-colors ml-1">
+                Sign in →
+            </a>
+        </p>
+
+    </div>
+</div>
+
+<!-- Register JS -->
+<script src="{% static 'js/register.js' %}"></script>
+
+{% endblock %}

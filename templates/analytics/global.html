@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Expense Analytics
+{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-slate-50 dark:bg-[#0b0f19] relative transition-colors duration-200">
+    <div class="pointer-events-none absolute inset-0 overflow-hidden opacity-50">
+        <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-orange-200/40 blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-indigo-200/40 blur-3xl"></div>
+    </div>
+
+    <!-- Sidebar (sticky / fixed on scroll) -->
+    <aside class="w-64 bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col sticky top-0 h-screen shrink-0 overflow-y-auto z-20 transition-colors duration-200">
+        <div class="px-5 py-5 border-b border-slate-100 dark:border-slate-800 relative z-10">
+            <a href="/client/dashboard/" class="flex items-center gap-3 group">
+                <img src="{% static 'img/logo-icon.png' %}" alt="Pay-Together Logo" class="w-10 h-10 rounded-xl object-cover shadow-sm sidebar-logo shrink-0 group-hover:scale-105 transition-transform">
+                <div class="min-w-0">
+                    <h1 class="text-xl font-black text-slate-900 dark:text-white tracking-tight whitespace-nowrap">Pay-Together</h1>
+                    <p class="text-slate-400 dark:text-slate-500 text-xs mt-0.5 font-medium whitespace-nowrap truncate">Split expenses easily</p>
+                </div>
+            </a>
+        </div>
+
+        <nav class="flex-1 mt-6 relative z-10 px-2 space-y-1">
+            <a href="/client/dashboard/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-house mr-3 icon-wobble w-5"></i> Dashboard
+            </a>
+            <a href="/client/tours/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-suitcase-rolling mr-3 icon-wobble w-5"></i> My Tours
+            </a>
+            <a href="/client/tours/create/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-circle-plus mr-3 icon-wobble w-5"></i> Create Tour
+            </a>
+            <a href="/client/analytics/" class="flex items-center px-4 py-3 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-semibold rounded-xl border-l-4 border-indigo-600 dark:border-indigo-400 transition">
+                <i class="fa-solid fa-chart-pie mr-3 icon-wobble text-indigo-600 dark:text-indigo-400 w-5"></i> Analytics
+            </a>
+            <a href="/client/notifications/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-bell mr-3 icon-wobble w-5"></i> Notifications
+            </a>
+            <a href="/client/profile/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-user mr-3 icon-wobble w-5"></i> Profile
+            </a>
+            {% if request.user.is_staff or request.user.is_superuser %}
+            <a href="http://127.0.0.1:8001/client/admin/" target="_blank" class="flex items-center px-4 py-3 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 font-bold rounded-xl transition">
+                <i class="fa-solid fa-shield-halved mr-3 icon-wobble w-5 text-amber-500"></i> Admin Portal
+                <span class="ml-auto text-[10px] font-black uppercase bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-700">8001</span>
+            </a>
+            {% endif %}
+            <a href="/client/logout/" class="flex items-center px-4 py-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium rounded-xl transition mt-8">
+                <i class="fa-solid fa-right-from-bracket mr-3 icon-wobble w-5"></i> Logout
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100 dark:border-slate-800 relative z-10 flex items-center justify-between gap-2">
+            <div class="p-2.5 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex-1">
+                <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Version</p>
+                <p class="text-xs font-bold text-slate-700 dark:text-slate-200 mt-0.5">v1.0 <span class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 ml-1"><i class="fa-solid fa-wand-magic-sparkles text-emerald-500 mr-0.5"></i> FYP</span></p>
+            </div>
+            <button type="button" class="theme-toggle w-11 h-11 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer text-lg shrink-0 shadow-sm" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
+                <span class="dark:hidden"><i class="fa-solid fa-moon"></i></span>
+                <span class="hidden dark:inline"><i class="fa-solid fa-sun text-amber-400"></i></span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 min-w-0 px-6 pt-4 pb-10 md:px-10 md:pt-5 md:pb-10 relative z-10">
+        <div class="max-w-6xl mx-auto">
+
+            <div id="messageBox" class="mb-4"></div>
+
+            <div class="mb-6" data-animate>
+                <p class="text-slate-500 text-sm font-black uppercase tracking-wider">
+                    <a href="/client/dashboard/" class="hover:underline">Home</a> /
+                    <span class="text-orange-600">Analytics</span>
+                </p>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between mb-10 gap-4">
+                <div class="welcome-slide" data-animate="left">
+                    <p class="text-slate-500 text-sm font-black uppercase tracking-wider text-orange-600">Global Overview</p>
+                    <h1 class="text-4xl md:text-5xl font-black text-slate-800 mt-2 text-shine">All-Time Expense Analytics</h1>
+                    <p class="text-slate-500 mt-3 text-lg">Category-wise spending across every tour you've joined.</p>
+                </div>
+                <div class="flex gap-3 flex-wrap">
+                    <a href="/client/tours/" class="bg-slate-800 hover:bg-slate-900 text-white px-7 py-4 rounded-2xl transition btn-ripple shadow-xl btn-tilt-3d font-black">
+                        ← All Tours
+                    </a>
+                </div>
+            </div>
+
+            <div id="summaryCards" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 stagger" data-animate>
+                <div class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-7 stat-card-bounce card-tilt-3d relative overflow-hidden gradient-border">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-slate-200/70 to-indigo-100/70 blur-2xl pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-500 text-sm font-black uppercase tracking-wider">Total Spent</p>
+                                <p id="cardTotalSpent" class="text-5xl font-black mt-3 stat-number text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-slate-900">Rs. 0.00</p>
+                            </div>
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-2xl shadow-xl sidebar-logo text-white"><i class="fa-solid fa-wallet"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-7 stat-card-bounce card-tilt-3d relative overflow-hidden gradient-border">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-blue-200/70 to-indigo-200/70 blur-2xl pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-500 text-sm font-black uppercase tracking-wider">Expenses Count</p>
+                                <p id="cardTotalExpenses" class="text-5xl font-black mt-3 stat-number text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">0</p>
+                            </div>
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-2xl shadow-xl sidebar-logo text-white"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-7 stat-card-bounce card-tilt-3d relative overflow-hidden gradient-border">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-orange-200/70 to-pink-200/70 blur-2xl pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-500 text-sm font-black uppercase tracking-wider">Top Category</p>
+                                <p id="cardTopCategory" class="text-4xl font-black mt-3 stat-number text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-600">—</p>
+                                <p id="cardTopShare" class="text-sm text-slate-500 mt-1">—</p>
+                            </div>
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-2xl shadow-xl sidebar-logo text-white"><i class="fa-solid fa-trophy"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 stagger" data-animate>
+                <div class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-7 card-tilt-3d relative overflow-hidden gradient-border chart-reveal">
+                    <div class="absolute top-0 left-0 w-40 h-40 rounded-full bg-gradient-to-br from-indigo-100/60 to-transparent blur-3xl pointer-events-none"></div>
+                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-1 flex items-center gap-2 relative z-10"><i class="fa-solid fa-chart-column icon-wobble text-indigo-500"></i> Category Breakdown</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mb-4 relative z-10">Bar chart of spending per category.</p>
+                    <div class="w-full h-[400px] p-3 relative z-10 rounded-2xl bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-7 card-tilt-3d relative overflow-hidden gradient-border chart-reveal">
+                    <div class="absolute top-0 right-0 w-40 h-40 rounded-full bg-gradient-to-br from-pink-100/60 to-transparent blur-3xl pointer-events-none"></div>
+                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-1 flex items-center gap-2 relative z-10"><i class="fa-solid fa-chart-pie icon-wobble text-rose-500"></i> Where the Money Went</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mb-4 relative z-10">Pie chart of category shares.</p>
+                    <div class="w-full h-[400px] p-3 relative z-10 rounded-2xl bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+                        <canvas id="donutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="topToursSection" class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-7 card-tilt-3d relative overflow-hidden gradient-border hidden" data-animate="scale">
+                <div class="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-gradient-to-br from-emerald-200/60 to-cyan-200/60 blur-2xl pointer-events-none"></div>
+                <h2 class="text-3xl font-black text-slate-800 mb-6 flex items-center gap-3 relative z-10"><i class="fa-solid fa-medal icon-wobble text-amber-500"></i> Top Tours by Spending</h2>
+                <div id="topToursList" class="space-y-3 stagger relative z-10"></div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    window.__PT_ANALYTICS_MODE__ = 'global';
+    window.__PT_TOUR_ID__ = null;
+</script>
+<script src="{% static 'js/api.js' %}?v=20260907_v3"></script>
+<script src="{% static 'js/analytics.js' %}?v=20260909_v3"></script>
+{% endblock %}

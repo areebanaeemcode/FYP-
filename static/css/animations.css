@@ -1,0 +1,384 @@
+/* ============================================
+   Pay-Together — Normalized Clean UI Animations
+   Sleek, Professional & Non-Distracting
+   ============================================ */
+
+/* ============== KEYFRAMES: CORE ENTRANCES ============== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============== NORMALIZED GENTLE SCALE / POP ============== */
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============== MODALS ============== */
+
+@keyframes modalBackdropFade {
+  from {
+    opacity: 0;
+    background-color: rgba(15, 23, 42, 0);
+  }
+  to {
+    opacity: 1;
+    background-color: rgba(15, 23, 42, 0.4);
+  }
+}
+
+@keyframes modalPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes sheetSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ============== SPINNERS & BARS ============== */
+
+@keyframes spinner {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes barFill {
+  from { width: 0%; opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============== BACKGROUND AMBIENCE (SOFT LIGHT THEME) ============== */
+
+.aurora-bg,
+.aurora-bg-dense {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.06) 0%, transparent 40%),
+              radial-gradient(circle at 50% 90%, rgba(147, 197, 253, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.12;
+  filter: blur(50px);
+}
+.blob-1 { width: 340px; height: 340px; background: #6366f1; top: -50px; left: -50px; }
+.blob-2 { width: 300px; height: 300px; background: #3b82f6; top: 25%; right: -40px; }
+.blob-3 { width: 320px; height: 320px; background: #a855f7; bottom: -50px; left: 30%; }
+.blob-4 { width: 250px; height: 250px; background: #38bdf8; top: 60%; left: -30px; }
+
+.particles-layer {
+  display: none !important;
+}
+
+/* ============== UTILITY CLASSES: SCROLL REVEAL & STAGGER ============== */
+
+/* Elements are immediately crisp, visible and readable */
+[data-animate] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+[data-animate="left"],
+[data-animate="right"],
+[data-animate="scale"],
+[data-animate="pop"],
+[data-animate="bounce"],
+[data-animate="zoom"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.stagger > * {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ============== UTILITY CLASSES: WELCOME & HEADERS ============== */
+
+.welcome-slide {
+  animation: fadeIn 0.25s ease-out both;
+}
+
+/* Elegant high-contrast headline gradient */
+.text-shine {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/* ============== UTILITY CLASSES: BUTTONS ============== */
+
+.btn-ripple,
+.btn-tilt-3d {
+  position: relative;
+  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  transform: none !important;
+  animation: none !important;
+}
+.btn-ripple:hover,
+.btn-tilt-3d:hover,
+.btn-ripple:active,
+.btn-tilt-3d:active {
+  transform: none !important;
+  animation: none !important;
+}
+
+.btn-breathe,
+.btn-float,
+.btn-pulse-ring,
+.btn-rainbow-glow {
+  animation: none !important;
+}
+
+/* ============== UTILITY CLASSES: CARDS ============== */
+
+.card-tilt-3d,
+.card-lift,
+.stat-card-bounce {
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.card-tilt-3d:hover,
+.card-lift:hover,
+.stat-card-bounce:hover {
+  transform: none !important;
+  animation: none !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+}
+
+.stat-card-bounce {
+  animation: none !important;
+}
+.stat-number {
+  animation: none !important;
+}
+
+/* ============== UTILITY CLASSES: ICONS ============== */
+
+.icon-wobble {
+  display: inline-block;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+.icon-wobble:hover,
+*:hover > .icon-wobble {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* ============== UTILITY CLASSES: MODALS & DROPDOWNS ============== */
+
+.modal-backdrop-fade {
+  animation: modalBackdropFade 0.15s ease both;
+}
+.modal-pop-in {
+  animation: modalPopIn 0.15s ease-out both;
+}
+
+/* ============== UTILITY CLASSES: NOTIFICATIONS ============== */
+
+.notif-slide-in {
+  animation: slideInRight 0.2s ease-out both;
+}
+
+.badge-pulse {
+  animation: none !important;
+}
+
+/* ============== UTILITY CLASSES: AUTH PAGES ============== */
+
+.auth-bg-gradient {
+  background: radial-gradient(circle at 10% 10%, #eff6ff 0%, transparent 40%),
+              radial-gradient(circle at 90% 90%, #f5f3ff 0%, transparent 45%),
+              #f8fafc;
+}
+
+.auth-card-float {
+  animation: fadeInDown 0.25s ease-out both;
+}
+
+.auth-hero-title {
+  animation: fadeIn 0.2s ease-out both;
+}
+
+.input-focus-pulse:focus-within {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* ============== UTILITY CLASSES: BRAND & AVATAR ============== */
+
+.sidebar-logo {
+  animation: none !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+}
+
+.avatar-ring::before {
+  display: none !important;
+}
+
+.hero-banner::before,
+.hero-banner::after {
+  display: none !important;
+}
+
+.gradient-border::before {
+  animation: none !important;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+}
+
+/* ============== CLEAN & SIMPLE EXPENSES SECTION ANIMATION ============== */
+
+#expensesList > div,
+.expense-card,
+.member-accordion-card {
+  animation: none !important;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+#expensesList > div:hover,
+.expense-card:hover,
+.member-accordion-card:hover {
+  transform: none !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.member-detail-box {
+  transition: opacity 0.15s ease-in-out;
+}

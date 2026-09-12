@@ -1,0 +1,13 @@
+=== .\_tr_task13.py (1 lines) ===
+  L142: [©] assert "©" in html2 or "Pay-Together" in html2, "TR-13.2 missing footer Pay-Together branding"
+=== .\_verify_e2e.py (2 lines) ===
+  L122: [✅❌] mark='✅ PASS' if ok else '❌ FAIL'
+  L128: [🎉🎉] print('🎉  ALL END-TO-END VERIFICATION CHECKS PASSED  🎉')
+=== .\static\js\dashboard.js (1 lines) ===
+  L139: [●] '<p class="text-sm font-semibold text-slate-800 ' + (isRead ? "" : "") + '">' + esc(title) + (isRead
+=== .\templates\dashboard\dashboard.html (1 lines) ===
+  L340: [©] <p class="font-bold text-slate-700 dark:text-slate-200">{{ pt_site_name|default:"Pay-Together" }} © 
+=== .\templates\landing.html (1 lines) ===
+  L662: [©] © 2026 Pay-Together. All rights reserved.
+=== .\templates\notifications\list.html (1 lines) ===
+  L134: [©] <p class="font-black text-slate-700 text-base">Pay-Together © {{ pt_year|default:"2026" }}</p>

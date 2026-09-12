@@ -1,0 +1,672 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-800 dark:text-slate-100 transition-colors duration-200 selection:bg-indigo-600 selection:text-white">
+
+    <!-- ========================================================================= -->
+    <!-- 1. STICKY NAVBAR -->
+    <!-- ========================================================================= -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/85 dark:bg-[#0b0f19]/85 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <a href="/" class="flex items-center gap-3 group">
+                <img src="{% static 'img/logo-icon.png' %}" alt="Pay-Together Logo"
+                    class="w-11 h-11 rounded-2xl object-cover shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200">
+                <div>
+                    <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+                        Pay-Together
+                        <span class="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">FYP</span>
+                    </span>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:block -mt-0.5">Split expenses effortlessly</p>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                <a href="#features" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Features</a>
+                <a href="#demo" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Live Demo</a>
+                <a href="#how-it-works" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">How it Works</a>
+                <a href="#scenarios" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Use Cases</a>
+                <a href="#faq" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">FAQ</a>
+            </nav>
+
+            <!-- Actions & Theme Toggle -->
+            <div class="flex items-center gap-3">
+                
+                <!-- Dark / Light Theme Toggle -->
+                <button type="button"
+                    class="theme-toggle w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer text-base"
+                    title="Toggle Theme" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:inline"></i>
+                </button>
+
+                {% if is_authenticated %}
+                <a href="{{ dashboard_url|default:'/client/dashboard/' }}"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-600/30 transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Dashboard</span>
+                    <span class="text-xs opacity-80 hidden sm:inline">({{ user_name }})</span>
+                </a>
+                <a href="/client/logout/"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl border border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 font-bold text-sm transition"
+                    title="Log out to landing page">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+                {% else %}
+                <a href="/login/"
+                    class="inline-flex items-center px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-indigo-500 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-bold text-sm transition">
+                    Login
+                </a>
+                <a href="/register/"
+                    class="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-600/30 transition transform hover:-translate-y-0.5">
+                    <span>Sign Up</span>
+                    <span>→</span>
+                </a>
+                {% endif %}
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" type="button"
+                    class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-lg font-bold cursor-pointer">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Drawer -->
+        <div id="mobileNav" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-4 space-y-3">
+            <a href="#features" class="block py-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Features</a>
+            <a href="#demo" class="block py-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Live Demo</a>
+            <a href="#how-it-works" class="block py-2 text-sm font-semibold text-slate-700 dark:text-slate-200">How it Works</a>
+            <a href="#scenarios" class="block py-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Use Cases</a>
+            <a href="#faq" class="block py-2 text-sm font-semibold text-slate-700 dark:text-slate-200">FAQ</a>
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+                {% if is_authenticated %}
+                <a href="{{ dashboard_url|default:'/client/dashboard/' }}" class="text-center py-2.5 text-sm font-bold text-white bg-indigo-600 rounded-xl shadow-sm flex items-center justify-center gap-2"><i class="fa-solid fa-bolt"></i> Open Dashboard</a>
+                <a href="/client/logout/" class="text-center py-2.5 text-sm font-bold text-rose-600 border border-rose-200 dark:border-rose-900/50 rounded-xl flex items-center justify-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                {% else %}
+                <a href="/login/" class="text-center py-2.5 text-sm font-bold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl">Login</a>
+                <a href="/register/" class="text-center py-2.5 text-sm font-bold text-white bg-indigo-600 rounded-xl shadow-sm">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- 2. HERO SECTION -->
+    <!-- ========================================================================= -->
+    <section class="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
+        
+        <!-- Ambient Glowing Background Blobs -->
+        <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-gradient-to-tr from-indigo-500/20 via-purple-500/15 to-pink-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+        <div class="absolute top-1/3 -left-32 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+        <div class="absolute top-2/3 -right-32 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto">
+                
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200/80 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-black tracking-wide uppercase shadow-xs mb-6">
+                    <span class="flex h-2 w-2 rounded-full bg-indigo-600 animate-pulse"></span>
+                    <span>Smart Travel Expense Splitting in Pakistan</span>
+                </div>
+
+                <!-- Main Heading -->
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.1]">
+                    Split Tour Expenses Without The
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+                        Drama & Math
+                    </span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                    Planning a trip to Hunza, Skardu, Swat, or a roadtrip with friends? Log fuel, hotels, and food in <strong class="text-slate-900 dark:text-white">Rs.</strong> — our smart algorithm computes the minimum payments needed to settle everyone to zero.
+                </p>
+
+                <!-- Dual CTA Buttons -->
+                <div class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    {% if is_authenticated %}
+                    <a href="{{ dashboard_url|default:'/client/dashboard/' }}"
+                        class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base shadow-xl shadow-indigo-600/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                        <span>Go to Dashboard</span>
+                        <span>→</span>
+                    </a>
+                    {% else %}
+                    <a href="{{ register_url|default:'/register/' }}"
+                        class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base shadow-xl shadow-indigo-600/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                        <span>Start a Tour Free</span>
+                        <span>→</span>
+                    </a>
+                    {% endif %}
+                    <a href="#demo"
+                        class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 font-extrabold text-base shadow-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt text-indigo-600 dark:text-indigo-400"></i>
+                        <span>Try Live Settlement Demo</span>
+                    </a>
+                </div>
+
+                <!-- Trust Micro-Badges -->
+                <div class="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-slate-500 dark:text-slate-400">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-500"></i> 100% Free For All Trips</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-indigo-500"></i> Minimum Transfers Algorithm</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-purple-500"></i> Works Offline With No Signal</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-amber-500"></i> Currency in Rs. (PKR)</span>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- Hero Mockup Card: Realistic Tour Preview -->
+            <!-- ============================================================= -->
+            <div class="mt-14 max-w-4xl mx-auto">
+                <div class="relative rounded-3xl p-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-2xl shadow-indigo-500/10">
+                    <div class="bg-white dark:bg-slate-900 rounded-[22px] p-6 sm:p-8 border border-slate-200/50 dark:border-slate-800">
+                        
+                        <!-- Mockup Header -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-indigo-600 text-lg"><i class="fa-solid fa-mountain-sun"></i></span>
+                                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Hunza & Skardu Expedition</h3>
+                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Ongoing</span>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Token: <strong class="tracking-widest text-indigo-600 dark:text-indigo-400 font-mono">HNZ420</strong> · 5 Members</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="text-right">
+                                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Total Spent</p>
+                                    <p class="text-2xl font-black text-indigo-600 dark:text-indigo-400">Rs. 95,000</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mockup Stats Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-6">
+                            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Budget</p>
+                                <p class="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">Rs. 150,000</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Fair Share</p>
+                                <p class="text-base font-extrabold text-blue-600 dark:text-blue-400 mt-0.5">Rs. 19,000 <span class="text-xs font-medium text-slate-400">/pp</span></p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Budget Left</p>
+                                <p class="text-base font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5">Rs. 55,000</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Suggested Transfers</p>
+                                <p class="text-base font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">Only 3</p>
+                            </div>
+                        </div>
+
+                        <!-- Suggested Transactions Preview -->
+                        <div class="rounded-2xl bg-indigo-50/60 dark:bg-slate-800/90 border border-indigo-100 dark:border-slate-700 p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> Suggested Optimal Settlement
+                                </span>
+                                <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Minimized from 10 transfers</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-xs sm:text-sm font-semibold">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 rounded-md bg-rose-100 text-rose-700 font-bold flex items-center justify-center text-xs">U</span>
+                                        <span>Usman</span>
+                                        <span class="text-indigo-500 font-black">pays →</span>
+                                        <span class="w-6 h-6 rounded-md bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs">A</span>
+                                        <span>Ali (Petrol Payer)</span>
+                                    </div>
+                                    <span class="font-black text-emerald-600 dark:text-emerald-400">Rs. 14,000</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-xs sm:text-sm font-semibold">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 rounded-md bg-amber-100 text-amber-700 font-bold flex items-center justify-center text-xs">B</span>
+                                        <span>Bilal</span>
+                                        <span class="text-indigo-500 font-black">pays →</span>
+                                        <span class="w-6 h-6 rounded-md bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-xs">S</span>
+                                        <span>Sara (Hotel Payer)</span>
+                                    </div>
+                                    <span class="font-black text-emerald-600 dark:text-emerald-400">Rs. 7,000</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 3. INTERACTIVE LIVE SETTLEMENT DEMO SECTION -->
+    <!-- ========================================================================= -->
+    <section id="demo" class="py-20 bg-white dark:bg-[#0f172a] border-y border-slate-200 dark:border-slate-800 transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Interactive Playground</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2 tracking-tight">
+                    Try The Settlement Algorithm Live
+                </h2>
+                <p class="text-slate-600 dark:text-slate-400 text-base mt-3 font-medium">
+                    Adjust who paid what for a roadtrip. Watch the engine automatically calculate each person's fair share and generate the minimum number of payments.
+                </p>
+            </div>
+
+            <!-- Interactive Widget Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-5xl mx-auto">
+                
+                <!-- Left: Member Inputs -->
+                <div class="lg:col-span-6 bg-slate-50 dark:bg-slate-900/90 rounded-3xl p-6 sm:p-7 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-users text-indigo-600"></i> Friends & Amounts Paid
+                            </h3>
+                            <button id="demoResetBtn" type="button" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer flex items-center gap-1.5">
+                                <i class="fa-solid fa-rotate-right"></i> Reset Sample
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 font-medium">
+                            Type any amount in Rs. to see real-time recalculation:
+                        </p>
+
+                        <!-- Dynamic Inputs List -->
+                        <div id="demoInputsList" class="space-y-3">
+                            <!-- Populated by static/js/landing.js -->
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <button id="demoAddMemberBtn" type="button"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-200/80 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 text-xs font-bold transition cursor-pointer">
+                            <i class="fa-solid fa-user-plus"></i> Add Friend
+                        </button>
+                        <span class="text-xs text-slate-400 font-medium">Live recalculation</span>
+                    </div>
+                </div>
+
+                <!-- Right: Settlement Output -->
+                <div class="lg:col-span-6 bg-slate-50 dark:bg-slate-900/90 rounded-3xl p-6 sm:p-7 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-scale-balanced text-indigo-600"></i> Calculated Settlement
+                            </h3>
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-black bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">
+                                Zero-Debt Engine
+                            </span>
+                        </div>
+
+                        <!-- Summary Cards -->
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                <p class="text-[10px] font-bold uppercase text-slate-400">Total Group Spend</p>
+                                <p id="demoTotalSpent" class="text-xl font-black text-slate-900 dark:text-white mt-0.5">Rs. 36,000</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                <p class="text-[10px] font-bold uppercase text-slate-400">Fair Share Each</p>
+                                <p id="demoFairShare" class="text-xl font-black text-indigo-600 dark:text-indigo-400 mt-0.5">Rs. 9,000 <span class="text-xs font-normal">/ person</span></p>
+                            </div>
+                        </div>
+
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                            Minimum Suggested Transfers:
+                        </p>
+
+                        <!-- Suggested Transfers Container -->
+                        <div id="demoTransfersList" class="space-y-2.5">
+                            <!-- Populated by landing.js -->
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 text-center">
+                        <p class="text-xs text-slate-500 dark:text-slate-400">
+                            Want to manage your actual group trips?
+                            <a href="{{ register_url|default:'/register/' }}" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline ml-1">Create free tour account →</a>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 4. CORE FEATURES (BENTO GRID) -->
+    <!-- ========================================================================= -->
+    <section id="features" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <span class="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Why Pay-Together</span>
+            <h2 class="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white mt-2 tracking-tight">
+                Everything You Need for Peaceful Group Travel
+            </h2>
+            <p class="text-slate-600 dark:text-slate-400 text-base mt-4 font-medium">
+                No messy spreadsheets, no confusing WhatsApp chats, and zero forgotten expenses.
+            </p>
+        </div>
+
+        <!-- Bento Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Card 1: Debt Minimization -->
+            <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-indigo-400/50 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl mb-6">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Minimal-Transfer Algorithm</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed">
+                    Instead of 10 people sending 20 separate payments to each other, our graph greedy engine simplifies all debts into the absolute minimum number of cash/bank transfers.
+                </p>
+            </div>
+
+            <!-- Card 2: Offline Mode -->
+            <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-emerald-400/50 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-6">
+                    <i class="fa-solid fa-signal"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Works In No-Signal Valleys</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed">
+                    Traveling through Babusar Pass, Deosai, or Khunjerab with zero cell service? Add expenses offline seamlessly. Everything auto-syncs as soon as 4G returns.
+                </p>
+            </div>
+
+            <!-- Card 3: Flexible Splits -->
+            <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-purple-400/50 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center text-2xl mb-6">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Equal or Custom Splits</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed">
+                    Split equally across all members or designate custom shares for individuals (e.g. someone didn't eat dinner, or paid extra for a private hotel room).
+                </p>
+            </div>
+
+            <!-- Card 4: Quick 6-Char Join Codes -->
+            <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-blue-400/50 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl mb-6">
+                    <i class="fa-solid fa-link"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">1-Click Join Codes</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed">
+                    No tedious invites or email confirmations needed. Share a clean 6-character token (e.g. <span class="font-mono font-bold text-indigo-600">HNZ420</span>) in your WhatsApp group to add friends instantly.
+                </p>
+            </div>
+
+            <!-- Card 5: Visual Tour Analytics -->
+            <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-amber-400/50 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl mb-6">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Budget & Category Analytics</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed">
+                    Track your spending against the allocated tour budget in real time. Breakdown totals by Transport (Petrol/Jeeps), Accommodation, Food, and Activities.
+                </p>
+            </div>
+
+            <!-- Card 6: Receipt Attachments -->
+            <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-rose-400/50 transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center text-2xl mb-6">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Receipt & Slip Attachments</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed">
+                    Snap a photo of the petrol pump slip, hotel invoice, or restaurant bill and attach it directly to the expense. Eliminates doubt and keeps full transparency.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 5. HOW IT WORKS (3 SIMPLE STEPS) -->
+    <!-- ========================================================================= -->
+    <section id="how-it-works" class="py-20 bg-slate-100/70 dark:bg-[#0f172a] border-y border-slate-200 dark:border-slate-800 transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Simple Workflow</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2 tracking-tight">
+                    How Pay-Together Works in 3 Steps
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto relative">
+                
+                <!-- Step 1 -->
+                <div class="relative p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center shadow-sm">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white font-black text-xl flex items-center justify-center mx-auto mb-6 shadow-md shadow-indigo-500/30">
+                        1
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Create Tour & Invite Friends</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-2 leading-relaxed">
+                        Set destination (e.g. Naran, Skardu), enter your target budget in Rs., and share your 6-character code with your travel buddies.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center shadow-sm">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-600 text-white font-black text-xl flex items-center justify-center mx-auto mb-6 shadow-md shadow-purple-500/30">
+                        2
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Log Expenses On The Go</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-2 leading-relaxed">
+                        Whenever someone pays for fuel, dinner, or jeep safari, record it in 5 seconds — even with zero cellular signal.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center shadow-sm">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-black text-xl flex items-center justify-center mx-auto mb-6 shadow-md shadow-emerald-500/30">
+                        3
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">1-Click Settlement</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-2 leading-relaxed">
+                        Tap Settlement: see exactly who pays whom in minimal transfers. Mark transactions as paid as money exchanges hands.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 6. TRIP SCENARIOS -->
+    <!-- ========================================================================= -->
+    <section id="scenarios" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <span class="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Versatile Use Cases</span>
+            <h2 class="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white mt-2 tracking-tight">
+                Built For Every Shared Adventure
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <i class="fa-solid fa-car-side text-3xl block mb-4 text-indigo-600"></i>
+                <h4 class="text-lg font-bold text-slate-900 dark:text-white">Northern Roadtrips</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-xs mt-2 leading-relaxed">
+                    Hunza, Skardu, Gilgit, Naran, Swat roadtrips with fuel pools, jeep fares, and highway tolls.
+                </p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <i class="fa-solid fa-house-user text-3xl block mb-4 text-purple-600"></i>
+                <h4 class="text-lg font-bold text-slate-900 dark:text-white">Hostel & Roommates</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-xs mt-2 leading-relaxed">
+                    Split monthly hostel mess bills, grocery runs, electricity, WiFi, and shared living expenses.
+                </p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <i class="fa-solid fa-graduation-cap text-3xl block mb-4 text-emerald-600"></i>
+                <h4 class="text-lg font-bold text-slate-900 dark:text-white">University FYP Groups</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-xs mt-2 leading-relaxed">
+                    Track hardware component costs, printing, project materials, and team lunches transparently.
+                </p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <i class="fa-solid fa-campground text-3xl block mb-4 text-amber-500"></i>
+                <h4 class="text-lg font-bold text-slate-900 dark:text-white">Family Vacations</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-xs mt-2 leading-relaxed">
+                    Joint family weekend trips, picnic catering, farmhouse rentals, and BBQ nights.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 7. FREQUENTLY ASKED QUESTIONS (ACCORDION) -->
+    <!-- ========================================================================= -->
+    <section id="faq" class="py-20 bg-slate-100/70 dark:bg-[#0f172a] border-t border-slate-200 dark:border-slate-800 transition-colors duration-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center mb-14">
+                <span class="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Got Questions?</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2 tracking-tight">
+                    Frequently Asked Questions
+                </h2>
+            </div>
+
+            <div class="space-y-4">
+                
+                <!-- FAQ Item 1 -->
+                <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+                    <button type="button" class="faq-toggle w-full p-5 text-left font-bold text-slate-900 dark:text-white flex items-center justify-between gap-4 cursor-pointer" aria-expanded="false">
+                        <span>Is Pay-Together completely free to use?</span>
+                        <span class="faq-icon text-slate-400 transition-transform duration-200"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-3">
+                        Yes! Pay-Together is 100% free with no hidden charges, subscription tiers, or payment limits. It was engineered specifically to make group travels affordable and stress-free.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+                    <button type="button" class="faq-toggle w-full p-5 text-left font-bold text-slate-900 dark:text-white flex items-center justify-between gap-4 cursor-pointer" aria-expanded="false">
+                        <span>How does the minimal-transfer settlement algorithm work?</span>
+                        <span class="faq-icon text-slate-400 transition-transform duration-200"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-3">
+                        The algorithm calculates each member's total spend against their fair share to establish net balances (positive for creditors, negative for debtors). It then executes a greedy match pairing the largest debtor to the largest creditor, which mathematically guarantees the minimum possible number of individual transactions needed to settle all debts.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+                    <button type="button" class="faq-toggle w-full p-5 text-left font-bold text-slate-900 dark:text-white flex items-center justify-between gap-4 cursor-pointer" aria-expanded="false">
+                        <span>Does the application work offline during remote tours?</span>
+                        <span class="faq-icon text-slate-400 transition-transform duration-200"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-3">
+                        Yes! When traveling through remote mountain regions with no internet connectivity, you can still log expenses locally in the browser. They are queued securely and automatically synchronized to the server the moment connectivity is restored.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+                    <button type="button" class="faq-toggle w-full p-5 text-left font-bold text-slate-900 dark:text-white flex items-center justify-between gap-4 cursor-pointer" aria-expanded="false">
+                        <span>Can I customize who pays for what? (Unequal splits)</span>
+                        <span class="faq-icon text-slate-400 transition-transform duration-200"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-3">
+                        Absolutely. While equal splitting is the default, you can uncheck specific members for any expense or enter exact custom share amounts (for example, if only 3 members went on a chairlift or ordered an extra dish).
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 8. HIGH-IMPACT BOTTOM CTA BANNER -->
+    <!-- ========================================================================= -->
+    <section class="py-20 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative rounded-3xl p-10 sm:p-14 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-center shadow-2xl shadow-indigo-600/30 overflow-hidden">
+                
+                <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <span class="text-xs font-black tracking-widest uppercase bg-white/20 px-3.5 py-1.5 rounded-full inline-block mb-4">Ready To Travel?</span>
+                <h2 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+                    Start Your Next Group Tour Without The Expense Headaches
+                </h2>
+                <p class="text-indigo-100 text-base sm:text-lg max-w-xl mx-auto mt-4 font-medium">
+                    Join hundreds of travelers and students who save hours of awkward bill calculations after every trip.
+                </p>
+
+                <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    {% if is_authenticated %}
+                    <a href="{{ dashboard_url|default:'/client/dashboard/' }}"
+                        class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-base shadow-lg hover:bg-slate-100 transition transform hover:-translate-y-0.5">
+                        Open Dashboard →
+                    </a>
+                    {% else %}
+                    <a href="{{ register_url|default:'/register/' }}"
+                        class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-base shadow-lg hover:bg-slate-100 transition transform hover:-translate-y-0.5">
+                        Create Your Free Account →
+                    </a>
+                    <a href="{{ login_url|default:'/login/' }}"
+                        class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-700/60 hover:bg-indigo-700 text-white font-bold text-base border border-white/20 transition">
+                        Log In
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 9. FOOTER -->
+    <!-- ========================================================================= -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b0f19] transition-colors duration-200 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            
+            <div class="flex items-center gap-3">
+                <img src="{% static 'img/logo-icon.png' %}" alt="Pay-Together Logo" class="w-8 h-8 rounded-xl object-cover">
+                <div>
+                    <span class="font-extrabold text-base text-slate-900 dark:text-white">Pay-Together</span>
+                    <p class="text-xs text-slate-400">Smart Group Tour Expense Sharing · FYP 2026</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <a href="#features" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Features</a>
+                <a href="#demo" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Live Demo</a>
+                <a href="#how-it-works" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">How it Works</a>
+                <a href="#faq" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">FAQ</a>
+                <a href="{{ login_url|default:'/login/' }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Login</a>
+            </div>
+
+            <div class="text-xs text-slate-400 text-center sm:text-right">
+                © 2026 Pay-Together. All rights reserved.
+            </div>
+
+        </div>
+    </footer>
+
+</div>
+
+<!-- Landing Page Dynamic Interactive Script -->
+<script src="{% static 'js/landing.js' %}?v=20260907_v1"></script>
+{% endblock %}

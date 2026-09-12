@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}Pay-Together — Split Expenses Effortlessly{% endblock %}
+    </title>
+    <link rel="icon" type="image/png" href="{% static 'img/logo-icon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/logo-icon.png' %}">
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Early Theme Initializer to prevent flash of wrong theme -->
+    <script>
+        (function () {
+            try {
+                var savedTheme = localStorage.getItem('theme');
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            } catch (e) { }
+        })();
+    </script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS & Animations -->
+    <link rel="stylesheet" href="{% static 'css/animations.css' %}?v=20260907_v1">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260907_v1">
+
+    {% if user.is_authenticated %}
+    <script>
+        window.DJANGO_USER = {
+            id: {{ user.id|default:"null" }},
+            email: "{{ user.email|escapejs }}",
+            first_name: "{{ user.first_name|escapejs }}",
+            last_name: "{{ user.last_name|escapejs }}",
+            isAuthenticated: true
+        };
+        {% if jwt_access %}
+        try {
+            if (!localStorage.getItem("pt_access_token")) {
+                localStorage.setItem("pt_access_token", "{{ jwt_access|escapejs }}");
+                localStorage.setItem("pt_refresh_token", "{{ jwt_refresh|escapejs }}");
+                localStorage.setItem("pt_user", JSON.stringify(window.DJANGO_USER));
+            }
+        } catch (e) { }
+        {% endif %}
+    </script>
+    {% endif %}
+
+    {% block css %}
+    {% endblock %}
+</head>
+
+<body
+    class="bg-slate-50 dark:bg-[#0b0f19] text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen selection:bg-indigo-500 selection:text-white transition-colors duration-150">
+
+    <div class="page-enter min-h-screen w-full">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Scroll Reveal & Dynamic Animations Engine -->
+    <script>
+        (function () {
+            // IntersectionObserver for data-animate & stagger elements
+            var supportsIO = 'IntersectionObserver' in window;
+            function reveal(el) {
+                el.classList.add('is-visible');
+            }
+
+            if (!supportsIO) {
+                document.querySelectorAll('[data-animate], .stagger').forEach(reveal);
+            } else {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            reveal(entry.target);
+                            io.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+                function bindReveals() {
+                    document.querySelectorAll('[data-animate]:not(.is-visible), .stagger:not(.is-visible)').forEach(function (el) {
+                        io.observe(el);
+                    });
+                }
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', bindReveals);
+                } else {
+                    bindReveals();
+                }
+
+                // Periodically check for dynamically added items (e.g. expenses, members)
+                setInterval(bindReveals, 1200);
+            }
+
+            // Global 3D Tilt micro-interaction for cards & buttons
+            document.addEventListener('mousemove', function (e) {
+                var tiltEls = document.querySelectorAll('.card-tilt-3d:hover');
+                tiltEls.forEach(function (el) {
+                    var rect = el.getBoundingClientRect();
+                    var x = e.clientX - rect.left;
+                    var y = e.clientY - rect.top;
+                    var cx = rect.width / 2;
+                    var cy = rect.height / 2;
+                    var rotX = ((y - cy) / cy) * -6;
+                    var rotY = ((x - cx) / cx) * 6;
+                    el.style.transform = 'perspective(1000px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-4px)';
+                });
+            });
+
+            document.addEventListener('mouseout', function (e) {
+                if (e.target && e.target.classList && e.target.classList.contains('card-tilt-3d')) {
+                    e.target.style.transform = '';
+                }
+            });
+        })();
+    </script>
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/script.js' %}?v=20260908_v2"></script>
+
+    {% block js %}
+    {% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Notifications
+{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-slate-50 dark:bg-[#0b0f19] relative transition-colors duration-200">
+    <div class="pointer-events-none absolute inset-0 overflow-hidden opacity-50">
+        <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-rose-200/40 blur-3xl"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-blue-200/40 blur-3xl"></div>
+    </div>
+
+    <!-- Sidebar (sticky / fixed on scroll, consistent with dashboard) -->
+    <aside class="w-64 bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col sticky top-0 h-screen shrink-0 overflow-y-auto z-20 transition-colors duration-200">
+        <div class="px-5 py-5 border-b border-slate-100 dark:border-slate-800 relative z-10">
+            <a href="/client/dashboard/" class="flex items-center gap-3 group">
+                <img src="{% static 'img/logo-icon.png' %}" alt="Pay-Together Logo" class="w-10 h-10 rounded-xl object-cover shadow-sm sidebar-logo shrink-0 group-hover:scale-105 transition-transform">
+                <div class="min-w-0">
+                    <h1 class="text-xl font-black text-slate-900 dark:text-white tracking-tight whitespace-nowrap">Pay-Together</h1>
+                    <p class="text-slate-400 dark:text-slate-500 text-xs mt-0.5 font-medium whitespace-nowrap truncate">Split expenses easily</p>
+                </div>
+            </a>
+        </div>
+
+        <nav class="flex-1 mt-6 relative z-10 px-2 space-y-1">
+            <a href="/client/dashboard/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-house mr-3 icon-wobble w-5"></i> Dashboard
+            </a>
+            <a href="/client/tours/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-suitcase-rolling mr-3 icon-wobble w-5"></i> My Tours
+            </a>
+            <a href="/client/tours/create/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-circle-plus mr-3 icon-wobble w-5"></i> Create Tour
+            </a>
+            <a href="/client/analytics/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-chart-pie mr-3 icon-wobble w-5"></i> Analytics
+            </a>
+            <a href="/client/notifications/" class="flex items-center px-4 py-3 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-semibold rounded-xl border-l-4 border-indigo-600 dark:border-indigo-400 transition">
+                <i class="fa-solid fa-bell mr-3 icon-wobble text-indigo-600 dark:text-indigo-400 w-5"></i> Notifications
+            </a>
+            <a href="/client/profile/" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 font-medium rounded-xl transition">
+                <i class="fa-solid fa-user mr-3 icon-wobble w-5"></i> Profile
+            </a>
+            {% if request.user.is_staff or request.user.is_superuser %}
+            <a href="http://127.0.0.1:8001/client/admin/" target="_blank" class="flex items-center px-4 py-3 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 font-bold rounded-xl transition">
+                <i class="fa-solid fa-shield-halved mr-3 icon-wobble w-5 text-amber-500"></i> Admin Portal
+                <span class="ml-auto text-[10px] font-black uppercase bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-700">8001</span>
+            </a>
+            {% endif %}
+            <a href="/client/logout/" class="flex items-center px-4 py-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium rounded-xl transition mt-8">
+                <i class="fa-solid fa-right-from-bracket mr-3 icon-wobble w-5"></i> Logout
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100 dark:border-slate-800 relative z-10 flex items-center justify-between gap-2">
+            <div class="p-2.5 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex-1">
+                <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Version</p>
+                <p class="text-xs font-bold text-slate-700 dark:text-slate-200 mt-0.5">v1.0 <span class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 ml-1"><i class="fa-solid fa-wand-magic-sparkles text-emerald-500 mr-0.5"></i> FYP</span></p>
+            </div>
+            <button type="button" class="theme-toggle w-11 h-11 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer text-lg shrink-0 shadow-sm" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
+                <span class="dark:hidden"><i class="fa-solid fa-moon"></i></span>
+                <span class="hidden dark:inline"><i class="fa-solid fa-sun text-amber-400"></i></span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 min-w-0 px-6 pt-4 pb-10 md:px-10 md:pt-5 md:pb-10 relative z-10">
+        <div class="max-w-5xl mx-auto">
+
+            <!-- Breadcrumb / Title -->
+            <div class="mb-6" data-animate>
+                <p class="text-sm text-slate-500 font-bold uppercase tracking-wider">
+                    <a href="{{ dashboard_url }}" class="hover:text-blue-600">Dashboard</a>
+                    <span class="mx-1.5 text-slate-400">/</span>
+                    <span class="text-indigo-600">Notifications</span>
+                </p>
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-4">
+                    <div class="welcome-slide" data-animate="left">
+                        <h1 class="text-4xl md:text-5xl font-black text-slate-800 text-shine flex items-center gap-4">
+                            <i class="fa-solid fa-bell text-indigo-600 icon-wobble"></i> Notifications
+                        </h1>
+                        <p class="text-slate-500 mt-3 text-lg">Stay updated on tour activity, expense changes, and spending limit alerts.</p>
+                    </div>
+                    <div class="flex gap-3 flex-wrap">
+                        <button type="button" id="markAllReadBtn"
+                                class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-7 py-3.5 rounded-2xl font-black shadow-2xl shadow-indigo-500/40 btn-ripple btn-tilt-3d transition flex items-center gap-2">
+                            <i class="fa-solid fa-check-double"></i> Mark all as read
+                        </button>
+                        <button type="button" id="refreshNotifsBtn"
+                                class="bg-white hover:bg-slate-50 text-slate-700 border-2 border-slate-200 px-7 py-3.5 rounded-2xl font-black btn-ripple btn-tilt-3d transition flex items-center gap-2">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary banner -->
+            <div class="bg-gradient-to-r from-indigo-50 via-blue-50 to-rose-50 rounded-3xl p-8 border border-indigo-100 mb-10 flex flex-wrap items-center justify-between gap-4 card-tilt-3d relative overflow-hidden" data-animate>
+                <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-gradient-to-br from-rose-200/60 to-blue-200/60 blur-3xl pointer-events-none"></div>
+                <div class="relative z-10">
+                    <p class="text-slate-500 text-sm font-black uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-chart-line text-indigo-500"></i> Summary</p>
+                    <p class="text-4xl font-black text-slate-800 mt-2 stat-number flex items-center gap-4">
+                        <span id="summaryUnread" class="text-rose-600 badge-pulse inline-block px-4 py-2 bg-rose-100 rounded-2xl border-2 border-rose-200">0</span>
+                        <span class="text-2xl text-slate-400">·</span>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-rose-600">
+                            <span id="summaryTotal">0</span> total
+                        </span>
+                    </p>
+                </div>
+                <a href="{{ tour_list_url }}" class="bg-white hover:bg-slate-50 text-slate-700 border-2 border-slate-200 px-6 py-3.5 rounded-2xl font-black btn-ripple btn-tilt-3d transition relative z-10 flex items-center gap-2">
+                    <i class="fa-solid fa-suitcase-rolling"></i> Browse Tours
+                </a>
+            </div>
+
+            <!-- Notifications list -->
+            <div id="messageBox" class="mb-6"></div>
+
+            <div class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl border border-slate-100 overflow-hidden card-tilt-3d relative gradient-border" data-animate="scale">
+                <div class="absolute top-0 right-0 w-56 h-56 rounded-full bg-gradient-to-br from-indigo-100/60 to-rose-100/60 blur-3xl pointer-events-none"></div>
+                <div class="px-8 py-6 border-b border-slate-100 bg-gradient-to-r from-slate-50/80 to-indigo-50/50 flex items-center justify-between relative z-10">
+                    <h2 class="text-2xl font-black text-slate-800 flex items-center gap-3"><i class="fa-solid fa-clipboard-list icon-wobble text-indigo-600"></i> All activity</h2>
+                    <div id="listMeta" class="text-xs text-slate-500 font-black uppercase tracking-wider bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-sm">Loading…</div>
+                </div>
+                <div id="notificationsList" class="divide-y divide-slate-100 stagger relative z-10">
+                    <div class="px-8 py-20 text-center">
+                        <div class="text-6xl mb-5 icon-wobble inline-block text-indigo-400"><i class="fa-solid fa-bell"></i></div>
+                        <h3 class="font-black text-slate-700 text-2xl">Loading notifications…</h3>
+                        <p class="text-slate-500 mt-3 text-lg">Please wait.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="mt-12 pt-10 border-t border-slate-200" data-animate>
+                <div class="flex flex-wrap items-center justify-between gap-4 text-sm text-slate-500">
+                    <div>
+                        <p class="font-black text-slate-700 text-base">Pay-Together © {{ pt_year|default:"2026" }}</p>
+                        <p class="text-xs mt-1"><i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-xs mr-1"></i>FYP prototype · Shared web ledger for group trips</p>
+                    </div>
+                    <div class="flex gap-5">
+                        <a href="{{ dashboard_url }}" class="hover:text-slate-800 font-semibold transition-colors">Dashboard</a>
+                        <a href="{{ tour_list_url }}" class="hover:text-slate-800 font-semibold transition-colors">Tours</a>
+                        <a href="{{ profile_url }}" class="hover:text-slate-800 font-semibold transition-colors">Profile</a>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+</div>
+
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/offline.js' %}"></script>
+<script>
+(function () {
+    "use strict";
+    var api = window.PTApi || null;
+    if (!api) return;
+
+    const TINT = {
+        new_expense: "bg-blue-50 text-blue-700 border-blue-100",
+        member_joined: "bg-emerald-50 text-emerald-700 border-emerald-100",
+        limit_exceeded: "bg-amber-50 text-amber-700 border-amber-100",
+    };
+    const TYPE_ICONS = {
+        new_expense: '<i class="fa-solid fa-wallet text-blue-600"></i>',
+        member_joined: '<i class="fa-solid fa-user-plus text-emerald-600"></i>',
+        limit_exceeded: '<i class="fa-solid fa-triangle-exclamation text-amber-600"></i>',
+    };
+    const LABEL = {
+        new_expense: "New Expense",
+        member_joined: "Member Joined",
+        limit_exceeded: "Limit Exceeded",
+    };
+
+    function esc(s) {
+        if (s == null) return "";
+        return String(s)
+            .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function money(n) {
+        var v = Number(n || 0);
+        return "Rs. " + v.toFixed(2);
+    }
+
+    function load() {
+        return api.apiFetch("/client/notifications/api/", { method: "GET" }).then(function (r) {
+            if (!r.ok) return null;
+            var d = r.data || {};
+            var items = Array.isArray(d.items) ? d.items : (Array.isArray(d) ? d : []);
+            return {
+                items: items,
+                total_unread: Number(d.total_unread || 0),
+                count: Number(d.count != null ? d.count : items.length),
+            };
+        }).catch(function () { return null; });
+    }
+
+    function render(data) {
+        var listEl = document.getElementById("notificationsList");
+        var metaEl = document.getElementById("listMeta");
+        var sUnr = document.getElementById("summaryUnread");
+        var sTot = document.getElementById("summaryTotal");
+        if (!data || !Array.isArray(data.items)) {
+            if (listEl) listEl.innerHTML =
+                '<div class="px-8 py-20 text-center"><div class="text-6xl mb-5 icon-wobble inline-block text-rose-500"><i class="fa-solid fa-circle-xmark"></i></div><h3 class="font-black text-slate-700 text-2xl">Could not load notifications</h3><p class="text-slate-500 mt-3 text-lg">Network error. Please refresh.</p></div>';
+            return;
+        }
+        if (sUnr) sUnr.textContent = String(data.total_unread || 0);
+        if (sTot) sTot.textContent = String(data.count || data.items.length || 0);
+        if (metaEl) metaEl.textContent = String(data.items.length) + " item" + (data.items.length === 1 ? "" : "s");
+        if (!listEl) return;
+        if (data.items.length === 0) {
+            listEl.innerHTML =
+                '<div class="px-8 py-20 text-center"><div class="text-6xl mb-5 icon-wobble inline-block text-emerald-500"><i class="fa-solid fa-circle-check"></i></div><h3 class="font-black text-slate-700 text-2xl">All caught up</h3><p class="text-slate-500 mt-3 text-lg max-w-lg mx-auto">No notifications yet. Create a tour, add expenses, or invite friends to start receiving activity updates.</p></div>';
+            return;
+        }
+        var html = data.items.map(function (n) {
+            var t = n.type || "";
+            var label = LABEL[t] || "Info";
+            var iconHtml = TYPE_ICONS[t] || '<i class="fa-solid fa-bell text-slate-600"></i>';
+            var tint = TINT[t] || "bg-slate-50 text-slate-700 border-slate-200";
+            var read = !!n.is_read;
+            var title = n.title || "Notification";
+            var msg = n.message || "";
+            var date = "";
+            try { if (n.created_at) { var d = new Date(n.created_at); if (!isNaN(d.getTime())) date = d.toLocaleString(); } } catch (_) {}
+            var tourName = (n.tour && n.tour.title) ? n.tour.title : "";
+            var tourLink = (n.tour && n.tour.id) ? ("/client/tours/" + String(n.tour.id) + "/") : "";
+            return (
+                '<div class="px-8 py-6 hover:bg-slate-50/80 transition ' + (read ? "" : "bg-gradient-to-r from-sky-50/50 via-white to-indigo-50/40") + ' notif-row notif-slide-in group" data-id="' + (n.id || "") + '">' +
+                    '<div class="flex items-start gap-5">' +
+                        '<div class="avatar-ring shrink-0"><div class="w-12 h-12 rounded-2xl border ' + tint + ' flex items-center justify-center font-black text-lg shadow-md">' +
+                            iconHtml +
+                        '</div></div>' +
+                        '<div class="min-w-0 flex-1">' +
+                            '<div class="flex flex-wrap items-center gap-3 mb-2">' +
+                                '<span class="inline-flex items-center px-3 py-1 rounded-xl text-xs font-black border ' + tint + '">' + esc(label) + '</span>' +
+                                (!read ? '<span class="inline-flex w-3 h-3 rounded-full bg-rose-500 badge-pulse shadow-lg shadow-rose-500/60" title="Unread"></span>' : '') +
+                                (tourName ? '<span class="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-700' + (tourLink ? ' hover:bg-indigo-100 hover:text-indigo-700 cursor-pointer transition-colors' : '') + '"' + (tourLink ? (' onclick="event.stopPropagation(); window.location.href=\'' + tourLink + '\'; return false;"') : '') + '><i class="fa-solid fa-suitcase-rolling mr-1"></i> ' + esc(tourName) + '</span>' : '') +
+                                (date ? '<span class="text-xs text-slate-400 ml-auto font-bold bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">' + esc(date) + '</span>' : '') +
+                            '</div>' +
+                            '<h3 class="font-black text-slate-800 leading-snug text-xl">' + esc(title) + '</h3>' +
+                            (msg ? '<p class="text-base text-slate-600 mt-2 leading-relaxed">' + esc(msg) + '</p>' : '') +
+                        '</div>' +
+                    '</div>' +
+                '</div>'
+            );
+        }).join("");
+        listEl.innerHTML = html;
+        listEl.querySelectorAll(".notif-row").forEach(function (row) {
+            row.addEventListener("click", function () {
+                var id = row.getAttribute("data-id");
+                if (!id) return;
+                api.apiFetch("/client/notifications/api/mark-read/", {
+                    method: "POST",
+                    contentType: "application/json",
+                    body: JSON.stringify({ ids: [Number(id)] }),
+                }).then(function () { refresh(); }).catch(function () {});
+            });
+        });
+    }
+
+    function refresh() {
+        load().then(render);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        refresh();
+        var mBtn = document.getElementById("markAllReadBtn");
+        if (mBtn) mBtn.addEventListener("click", function () {
+            mBtn.disabled = true;
+            var orig = mBtn.textContent;
+            mBtn.textContent = "Updating…";
+            api.apiFetch("/client/notifications/api/mark-read/", {
+                method: "POST",
+                contentType: "application/json",
+                body: JSON.stringify({ all: true }),
+            }).then(function (r) {
+                mBtn.disabled = false;
+                mBtn.textContent = orig;
+                if (r.ok && api.showMessageBox) api.showMessageBox((r.data && r.data.detail) || "Marked all notifications as read.", "success");
+                refresh();
+            }).catch(function () {
+                mBtn.disabled = false;
+                mBtn.textContent = orig;
+            });
+        });
+        var rBtn = document.getElementById("refreshNotifsBtn");
+        if (rBtn) rBtn.addEventListener("click", refresh);
+    });
+})();
+</script>
+{% endblock %}
