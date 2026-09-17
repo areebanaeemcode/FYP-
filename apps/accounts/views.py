@@ -125,12 +125,36 @@ class ProfilePageView(LoginRequiredMixin, TemplateView):
 class ClientLogoutView(View):
     def get(self, request):
         from django.contrib.auth import logout as django_logout
+        from django.http import HttpResponse
+        
+        # Django session logout
         django_logout(request)
-        next_url = request.GET.get("next") or "/"
-        response = redirect(next_url)
+        next_url = request.GET.get("next") or "/login/"
+        
+        # Yeh HTML code browser ka purana local data bilkul clear kar dega
+        html_response = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <script>
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = "{next_url}";
+            </script>
+        </head>
+        <body>
+            <p>Logging out...</p>
+        </body>
+        </html>
+        """
+        response = HttpResponse(html_response)
         response.delete_cookie("jwt_access")
         response.delete_cookie("jwt_refresh")
+        response.delete_cookie("sessionid")
         return response
+
+    def post(self, request):
+        return self.get(request)
 
     def post(self, request):
         return self.get(request)

@@ -120,3 +120,19 @@ class TourMember(models.Model):
     def __str__(self):
         return f"{self.user} on {self.tour} ({self.role})"
 
+
+class SettlementTransfer(models.Model):
+    """A persistent completion record for a suggested settlement transfer."""
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name='settlement_transfers')
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='settlement_payments_sent')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='settlement_payments_received')
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    paid = models.BooleanField(default=False)
+    marked_paid_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                       related_name='marked_settlement_payments')
+    paid_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = [('tour', 'from_user', 'to_user', 'amount')]

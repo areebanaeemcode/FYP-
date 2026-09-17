@@ -53,17 +53,6 @@ Analytics — {{ tour.title }}
                 <i class="fa-solid fa-right-from-bracket mr-3 icon-wobble w-5"></i> Logout
             </a>
         </nav>
-
-        <div class="p-4 border-t border-slate-100 dark:border-slate-800 relative z-10 flex items-center justify-between gap-2">
-            <div class="p-2.5 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex-1">
-                <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Version</p>
-                <p class="text-xs font-bold text-slate-700 dark:text-slate-200 mt-0.5">v1.0 <span class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 ml-1"><i class="fa-solid fa-wand-magic-sparkles text-emerald-500 mr-0.5"></i> FYP</span></p>
-            </div>
-            <button type="button" class="theme-toggle w-11 h-11 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer text-lg shrink-0 shadow-sm" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
-                <span class="dark:hidden"><i class="fa-solid fa-moon"></i></span>
-                <span class="hidden dark:inline"><i class="fa-solid fa-sun text-amber-400"></i></span>
-            </button>
-        </div>
     </aside>
 
     <main class="flex-1 min-w-0 px-6 pt-4 pb-10 md:px-10 md:pt-5 md:pb-10 relative z-10">
@@ -88,7 +77,7 @@ Analytics — {{ tour.title }}
                 </div>
                 <div class="flex gap-3 flex-wrap">
                     <a href="{{ tour_detail_url }}" class="bg-slate-800 hover:bg-slate-900 text-white px-7 py-4 rounded-2xl transition btn-ripple shadow-xl btn-tilt-3d font-black">
-                        ← Back to Tour
+                        Back to Tour
                     </a>
                     <a href="{{ tour_settlement_url }}" class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-7 py-4 rounded-2xl transition btn-ripple shadow-2xl shadow-indigo-500/40 btn-tilt-3d font-black flex items-center gap-2">
                         <i class="fa-solid fa-scale-balanced"></i> Settlement

@@ -50,7 +50,7 @@ Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
                 {% if is_authenticated %}
                 <a href="{{ dashboard_url|default:'/client/dashboard/' }}"
                     class="inline-flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-600/30 transition transform hover:-translate-y-0.5">
-                    <i class="fa-solid fa-bolt"></i>
+                    <!-- <i class="fa-solid fa-bolt"></i> -->
                     <span>Dashboard</span>
                     <span class="text-xs opacity-80 hidden sm:inline">({{ user_name }})</span>
                 </a>
@@ -68,7 +68,6 @@ Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
                 <a href="/register/"
                     class="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-600/30 transition transform hover:-translate-y-0.5">
                     <span>Sign Up</span>
-                    <span>→</span>
                 </a>
                 {% endif %}
 
@@ -137,28 +136,26 @@ Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
                     <a href="{{ dashboard_url|default:'/client/dashboard/' }}"
                         class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base shadow-xl shadow-indigo-600/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
                         <span>Go to Dashboard</span>
-                        <span>→</span>
                     </a>
                     {% else %}
                     <a href="{{ register_url|default:'/register/' }}"
                         class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base shadow-xl shadow-indigo-600/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
                         <span>Start a Tour Free</span>
-                        <span>→</span>
                     </a>
                     {% endif %}
                     <a href="#demo"
                         class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 font-extrabold text-base shadow-sm transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-bolt text-indigo-600 dark:text-indigo-400"></i>
+                        <i class="text-indigo-600 dark:text-indigo-400"></i>
                         <span>Try Live Settlement Demo</span>
                     </a>
                 </div>
 
                 <!-- Trust Micro-Badges -->
                 <div class="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-slate-500 dark:text-slate-400">
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-500"></i> 100% Free For All Trips</span>
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-indigo-500"></i> Minimum Transfers Algorithm</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-purple-500"></i> 100% Free For All Trips</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-purple-500"></i> Minimum Transfers Algorithm</span>
                     <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-purple-500"></i> Works Offline With No Signal</span>
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-amber-500"></i> Currency in Rs. (PKR)</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-purple-500"></i> Currency in Rs. (PKR)</span>
                 </div>
             </div>
 
@@ -173,7 +170,9 @@ Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
                             <div>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-indigo-600 text-lg"><i class="fa-solid fa-mountain-sun"></i></span>
+                                    <span class="text-indigo-600 text-lg">
+                                    <i class="fa-solid fa-mountain-sun"></i>
+                                </span>
                                     <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Hunza & Skardu Expedition</h3>
                                     <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Ongoing</span>
                                 </div>
@@ -220,7 +219,7 @@ Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
                                     <div class="flex items-center gap-2">
                                         <span class="w-6 h-6 rounded-md bg-rose-100 text-rose-700 font-bold flex items-center justify-center text-xs">U</span>
                                         <span>Usman</span>
-                                        <span class="text-indigo-500 font-black">pays →</span>
+                                        <span class="text-indigo-500 font-black">pays </span>
                                         <span class="w-6 h-6 rounded-md bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs">A</span>
                                         <span>Ali (Petrol Payer)</span>
                                     </div>
@@ -230,7 +229,7 @@ Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
                                     <div class="flex items-center gap-2">
                                         <span class="w-6 h-6 rounded-md bg-amber-100 text-amber-700 font-bold flex items-center justify-center text-xs">B</span>
                                         <span>Bilal</span>
-                                        <span class="text-indigo-500 font-black">pays →</span>
+                                        <span class="text-indigo-500 font-black">pays </span>
                                         <span class="w-6 h-6 rounded-md bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-xs">S</span>
                                         <span>Sara (Hotel Payer)</span>
                                     </div>
@@ -332,7 +331,7 @@ Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
                     <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 text-center">
                         <p class="text-xs text-slate-500 dark:text-slate-400">
                             Want to manage your actual group trips?
-                            <a href="{{ register_url|default:'/register/' }}" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline ml-1">Create free tour account →</a>
+                            <a href="{{ register_url|default:'/register/' }}" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline ml-1">Create free tour account </a>
                         </p>
                     </div>
                 </div>
@@ -619,12 +618,12 @@ Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
                     {% if is_authenticated %}
                     <a href="{{ dashboard_url|default:'/client/dashboard/' }}"
                         class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-base shadow-lg hover:bg-slate-100 transition transform hover:-translate-y-0.5">
-                        Open Dashboard →
+                        Open Dashboard 
                     </a>
                     {% else %}
                     <a href="{{ register_url|default:'/register/' }}"
                         class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-base shadow-lg hover:bg-slate-100 transition transform hover:-translate-y-0.5">
-                        Create Your Free Account →
+                        Create Your Free Account 
                     </a>
                     <a href="{{ login_url|default:'/login/' }}"
                         class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-700/60 hover:bg-indigo-700 text-white font-bold text-base border border-white/20 transition">
@@ -656,10 +655,6 @@ Pay-Together — Smart Group Tour Expense Sharing & Settlement Platform
                 <a href="#how-it-works" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">How it Works</a>
                 <a href="#faq" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">FAQ</a>
                 <a href="{{ login_url|default:'/login/' }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Login</a>
-            </div>
-
-            <div class="text-xs text-slate-400 text-center sm:text-right">
-                © 2026 Pay-Together. All rights reserved.
             </div>
 
         </div>

@@ -89,23 +89,20 @@
             var fromColor = getAvatarClass(fromName, 0);
             var toColor = getAvatarClass(toName, 2);
 
-            var txKey = 'pt_paid_tx_' + tourId + '_' + (t.from_user_id || from.id || i) + '_' + (t.to_user_id || to.id || i) + '_' + t.amount;
-            var isPaid = false;
-            try {
-                isPaid = localStorage.getItem(txKey) === '1';
-            } catch (e) {}
+            // Payment state comes from the settlement API, not browser storage.
+            var isPaid = Boolean(t.paid);
 
             var buttonHtml = '';
             if (isPaid) {
                 buttonHtml = (
-                    '<button type="button" class="mark-paid-btn inline-flex items-center gap-1.5 px-4 py-2 border border-emerald-300 dark:border-emerald-600 rounded-xl text-sm font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 transition cursor-pointer shadow-xs" data-tx-key="' + txKey + '">' +
+                        '<button type="button" disabled class="inline-flex items-center gap-1.5 px-4 py-2 border border-emerald-300 dark:border-emerald-600 rounded-xl text-sm font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 cursor-default shadow-xs">' +
                         '<svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>' +
                         '<span>Paid</span>' +
                     '</button>'
                 );
             } else {
                 buttonHtml = (
-                    '<button type="button" class="mark-paid-btn inline-flex items-center gap-1.5 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-xl text-sm font-medium text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 transition cursor-pointer shadow-xs" data-tx-key="' + txKey + '">' +
+                        '<button type="button" class="mark-paid-btn inline-flex items-center gap-1.5 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-xl text-sm font-medium text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 transition cursor-pointer shadow-xs" data-from-user-id="' + (t.from_user_id || from.id || '') + '" data-to-user-id="' + (t.to_user_id || to.id || '') + '" data-amount="' + Number(t.amount || 0).toFixed(2) + '">' +
                         '<span>Mark paid</span>' +
                     '</button>'
                 );
@@ -141,32 +138,30 @@
         btns.forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
-                var txKey = btn.getAttribute('data-tx-key');
-                if (!txKey) return;
-                var currentPaid = false;
-                try {
-                    currentPaid = localStorage.getItem(txKey) === '1';
-                } catch (err) {}
-
-                var nextPaid = !currentPaid;
-                try {
-                    if (nextPaid) {
-                        localStorage.setItem(txKey, '1');
+                var fromUserId = btn.getAttribute('data-from-user-id');
+                var toUserId = btn.getAttribute('data-to-user-id');
+                var amount = btn.getAttribute('data-amount');
+                if (!fromUserId || !toUserId || !amount || !window.PTApi || !window.PTApi.apiFetch) return;
+                btn.disabled = true;
+                btn.textContent = 'Saving...';
+                window.PTApi.apiFetch('/client/tours/api/' + tourId + '/settlement/mark-paid/', {
+                    method: 'POST', requireAuth: true,
+                    body: { from_user_id: fromUserId, to_user_id: toUserId, amount: amount }
+                }).then(function (res) {
+                    if (res && res.ok) {
+                        window.__PT_INITIAL_SETTLEMENT__ = null;
+                        loadSettlement();
                     } else {
-                        localStorage.removeItem(txKey);
+                        btn.disabled = false;
+                        btn.textContent = 'Mark paid';
+                        var message = (res && res.data && res.data.detail) || 'Could not save payment status.';
+                        var messageBox = document.getElementById('messageBox');
+                        if (messageBox) messageBox.textContent = message;
                     }
-                } catch (err) {}
-
-                if (nextPaid) {
-                    btn.className = 'mark-paid-btn inline-flex items-center gap-1.5 px-4 py-2 border border-emerald-300 dark:border-emerald-600 rounded-xl text-sm font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 transition cursor-pointer shadow-xs';
-                    btn.innerHTML = (
-                        '<svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>' +
-                        '<span>Paid</span>'
-                    );
-                } else {
-                    btn.className = 'mark-paid-btn inline-flex items-center gap-1.5 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-xl text-sm font-medium text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 transition cursor-pointer shadow-xs';
-                    btn.innerHTML = '<span>Mark paid</span>';
-                }
+                }).catch(function () {
+                    btn.disabled = false;
+                    btn.textContent = 'Mark paid';
+                });
             });
         });
     }
@@ -325,6 +320,8 @@
         var msgBox = document.getElementById('addMemberModalMsg');
         var submitBtn = document.getElementById('submitAddMemberBtn');
 
+        // The settlement page does not expose an add-member trigger. Avoid
+        // binding an unreachable modal; member management remains on tour detail.
         if (!openBtn || !modal) return;
 
         function openModal() {
@@ -419,7 +416,8 @@
             window.PTApi.apiFetch(url, { method: 'GET', requireAuth: true })
                 .then(function (res) {
                     if (!res || !res.ok) {
-                        if (!window.__PT_INITIAL_SETTLEMENT__) {
+                        if (!window.__PT_INITIAL_SETTLEMENT__ ||
+                            !Array.isArray(window.__PT_INITIAL_SETTLEMENT__.per_member)) {
                             var msg = (res && res.data && (res.data.detail || res.data.message)) || (res && res.text) || 'Failed to load settlement.';
                             var mb = document.getElementById('messageBox');
                             if (mb) {

@@ -79,6 +79,11 @@ urlpatterns = [
         name='tour-settlement-api',
     ),
     path(
+        'api/<int:pk>/settlement/mark-paid/',
+        views.SettlementTransferPaidAPIView.as_view(),
+        name='tour-settlement-mark-paid-api',
+    ),
+    path(
         '<int:pk>/analytics/',
         views.TourAnalyticsPageView.as_view(),
         name='tour-analytics-page',

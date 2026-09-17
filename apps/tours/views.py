@@ -1,12 +1,15 @@
 from datetime import date
+from decimal import Decimal, InvalidOperation
 from urllib.parse import quote
 
 from django.db import IntegrityError, transaction
+from django.utils import timezone
 from django.db.models import Sum, Count, Subquery, OuterRef, CharField, Value as V
 from django.db.models.functions import Coalesce
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseForbidden
 
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -14,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from .models import Tour, TourMember
+from .models import Tour, TourMember, SettlementTransfer
 from .serializers import (
     TourSerializer,
     TourCreateSerializer,
@@ -490,11 +493,64 @@ class SettlementAPIView(APIView):
             )
         from .settlement_engine import compute_settlement
         data = compute_settlement(tour)
+        paid_transfers = set(SettlementTransfer.objects.filter(tour=tour, paid=True).values_list(
+            'from_user_id', 'to_user_id', 'amount'
+        ))
+        for transfer in data['transfers']:
+            key = (transfer['from_user_id'], transfer['to_user_id'], Decimal(str(transfer['amount'])).quantize(Decimal('0.01')))
+            transfer['paid'] = key in paid_transfers
         return Response(data, status=status.HTTP_200_OK)
+
+
+class SettlementTransferPaidAPIView(APIView):
+    """Persist completion of one current suggested transfer.
+
+    Only the member who owes the money may mark their own payment as completed.
+    The underlying balances remain an expense-based calculation.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk, *args, **kwargs):
+        tour = get_object_or_404(Tour, pk=pk)
+        if not tour.is_member(request.user):
+            return Response({'detail': 'You are not a member of this tour.'}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            from_user_id = int(request.data.get('from_user_id'))
+            to_user_id = int(request.data.get('to_user_id'))
+            amount = Decimal(str(request.data.get('amount'))).quantize(Decimal('0.01'))
+        except (TypeError, ValueError, InvalidOperation):
+            return Response({'detail': 'A valid transfer is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if amount <= 0 or request.user.id != from_user_id:
+            return Response({'detail': 'Only the paying member can mark this transfer paid.'}, status=status.HTTP_403_FORBIDDEN)
+
+        from .settlement_engine import compute_settlement
+        current = compute_settlement(tour)['transfers']
+        is_current_transfer = any(
+            item['from_user_id'] == from_user_id and item['to_user_id'] == to_user_id and
+            Decimal(str(item['amount'])).quantize(Decimal('0.01')) == amount
+            for item in current
+        )
+        if not is_current_transfer:
+            return Response({'detail': 'This transfer is no longer part of the current settlement.'}, status=status.HTTP_400_BAD_REQUEST)
+        with transaction.atomic():
+            record, _ = SettlementTransfer.objects.select_for_update().get_or_create(
+                tour=tour, from_user_id=from_user_id, to_user_id=to_user_id, amount=amount,
+            )
+            record.paid = True
+            record.marked_paid_by = request.user
+            record.paid_at = timezone.now()
+            record.save(update_fields=['paid', 'marked_paid_by', 'paid_at', 'updated_at'])
+        return Response({'paid': True}, status=status.HTTP_200_OK)
 
 
 class TourSettlementPageView(LoginRequiredMixin, TemplateView):
     template_name = 'tour/settlement.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        tour = get_object_or_404(Tour, pk=kwargs['pk'])
+        if not tour.is_member(request.user):
+            return HttpResponseForbidden('You are not a member of this tour.')
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -503,15 +559,17 @@ class TourSettlementPageView(LoginRequiredMixin, TemplateView):
         ctx['tour_id'] = kwargs['pk']
         ctx['tour_detail_url'] = '/client/tours/{pk}/'.format(pk=ctx['tour_id'])
         ctx['tour_list_url'] = '/client/tours/'
-        try:
-            from .settlement_engine import compute_settlement
-            import json
-            settlement_data = compute_settlement(tour)
-            ctx['settlement'] = settlement_data
-            ctx['settlement_json'] = json.dumps(settlement_data)
-        except Exception:
-            ctx['settlement'] = None
-            ctx['settlement_json'] = '{}'
+        from .settlement_engine import compute_settlement
+        import json
+        settlement_data = compute_settlement(tour)
+        paid_transfers = set(SettlementTransfer.objects.filter(tour=tour, paid=True).values_list(
+            'from_user_id', 'to_user_id', 'amount'
+        ))
+        for transfer in settlement_data['transfers']:
+            key = (transfer['from_user_id'], transfer['to_user_id'], Decimal(str(transfer['amount'])).quantize(Decimal('0.01')))
+            transfer['paid'] = key in paid_transfers
+        ctx['settlement'] = settlement_data
+        ctx['settlement_json'] = json.dumps(settlement_data)
         return ctx
 
 
